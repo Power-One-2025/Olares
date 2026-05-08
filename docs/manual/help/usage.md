@@ -45,16 +45,16 @@ If you urgently need the latest features, you can manually update the applicatio
 <template #Update-using-the-official-app-image>
 
 :::warning Risk
-The official original image might not be fully adapted for Olares (e.g., varying configuration paths or environment variables), so 100% compatibility is not guaranteed.
+The official image might not be fully adapted for Olares (e.g., varying configuration paths or environment variables), so 100% compatibility is not guaranteed.
 :::
 
 The following steps demonstrate how to manually update using Ollama as an example.
 
-1. Go to the application's detail page in the Market, and then click the **Source code** link to visit its GitHub repository.
+1. Go to the application's details page in the Market, and then click the **Source code** link to visit its GitHub repository.
 
     ![Source code link on app details page](/images/manual/help/faq-source-code-link.png#bordered)
 
-2.  Locate the official Docker image name `ollama/ollama` and the latest release tag (e.g., `0.23.1`).
+2. Locate the official Docker image name `ollama/ollama` and the latest release tag (e.g., `0.23.1`).
 
     ![Ollama Docker image name](/images/manual/help/faq-ollama-docker-hub.png#bordered)
 
@@ -66,7 +66,7 @@ The following steps demonstrate how to manually update using Ollama as an exampl
     ![Ollama Docker image hub](/images/manual/help/faq-ollama-container-update.png#bordered)
 
 5. Update the field to the new official image name and tag. For example, change `docker.io/beclab/ollama-ollama:0.20.5` to `docker.io/ollama/ollama:0.23.1`.
-6. Click **Confirm**, and then click **Start**. 
+6. Click **Confirm**. 
 
     The system will automatically pull the new image and restart the pod. Large images might take several minutes to download. Once complete, the pod status returns to **Running**.
 
@@ -80,7 +80,7 @@ The following steps demonstrate how to manually update using Ollama as an exampl
 <template #Update-using-the-Olares-mirrored-image>
 
 :::info
-Images under the `beclab` namespace offer better compatibility, because they have been tested or synchronized by the Olares team.
+Images under the `beclab` namespace offer better compatibility because they have been tested or synchronized by the Olares team.
 :::
 
 For some high-frequency update AI applications, Olares might have already mirrored the latest image to the official registry but hasn't manually pushed the chart update to the Market yet.
@@ -88,15 +88,16 @@ For some high-frequency update AI applications, Olares might have already mirror
 The following steps demonstrate how to manually update using OpenClaw as an example.
 
 1. Go to the official Olares Docker registry at https://hub.docker.com/u/beclab.
-2. Search for `OpenClaw`, go to its page, check the **Tags** tab, and then note down the latest version tag. For example, `2026.5.7`.
+2. Search for `OpenClaw`, go to its details page, check the **Tags** tab, and then note down the latest version tag. For example, `2026.5.7`.
 
     ![Search for latest docker image in Olares Docker registry](/images/manual/help/faq-openclaw-latest-image.png#bordered)
+
 3. Open Control Hub, go to **Browse** > **{Username}** > **clawdbot-{Username}** > **Deployments** > **clawdbot**, and then click <span class="material-symbols-outlined">edit_square</span>.
 4. In the YAML editor, find the `containers` section, and then note down the current image and tag, in case you need to roll back later. For example, `beclab/openclaw-openclaw:2026.3.12`.
 
     ![OpenClaw image tag in Control Hub](/images/manual/help/faq-openclaw-container-update.png#bordered)
 
-5. Update only the version tag of the existing beclab image. For example, change `beclab/openclaw-openclaw:2026.3.12` to `beclab/openclaw-openclaw:2026.5.7`.
+5. Update only the version tag of the existing `beclab` image. For example, change `beclab/openclaw-openclaw:2026.3.12` to `beclab/openclaw-openclaw:2026.5.7`.
 6. Click **Confirm**.
 
     The system will automatically pull the new image and restart the pod. Large images might take several minutes to download. Once complete, the pod status returns to **Running**.
@@ -109,7 +110,7 @@ The following steps demonstrate how to manually update using OpenClaw as an exam
 </template>
 </Tabs>
 
-:::tip Roll back
+:::tip Rollback
 If the application fails to start or experiences compatibility issues after a manual update, you can revert it by editing the YAML again to restore the old image tag using the one you noted down earlier. For example, change `docker.io/ollama/ollama:0.23.1` back to `docker.io/beclab/ollama-ollama:0.20.5`.
 :::
 
