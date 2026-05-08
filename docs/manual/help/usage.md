@@ -33,7 +33,7 @@ Yes. You can install [Studio](../../developer/develop/tutorial/index.md) to code
 
 ### Can I manually update an application version?
 
-:::tip
+:::tip Important notes
 We strongly recommend always updating applications through the Olares Market to ensure stability and compatibility.
 :::
 
@@ -41,27 +41,29 @@ Before publishing an update to the Market, the Olares team thoroughly tests new 
 
 If you urgently need the latest features, you can manually update the application's Docker image via the Control Hub.
 
+Before proceeding with the manual update, review the following notes:
+- **Temporary changes**: Manual edits to configurations in Control Hub are not persistent. When you apply an update through the Market later on, the Market version will overwrite all your manual configurations, including the image version.
+- **Unexpected behavior**: After the manual update, the application might fail to start or run correctly due to compatibility issues.
+
 <Tabs>
 <template #Update-using-the-official-app-image>
 
-:::warning Risk
-The official image might not be fully adapted for Olares because configuration paths or environment variables can vary. As a result, seamless compatibility is not guaranteed.
+:::warning Compatibility & privileges
+- The official image might not be fully adapted for Olares because configuration paths or environment variables can vary.
+- If the application requires root or other special privileges, using images from other organizations might prevent the application from starting due to permission restrictions.
 :::
 
 The following steps demonstrate how to manually update using Ollama as an example.
 
-1. Go to the application's details page in the Market, and then click the **Source code** link to visit its GitHub repository.
-
-    ![Source code link on app details page](/images/manual/help/faq-source-code-link.png#bordered)
-
-2. Locate the official Docker image name `ollama/ollama` and the latest release tag `0.23.1`.
+1. Find the official Docker image name and the latest release tag.
+2. Note down the image name and tag. For example, `ollama/ollama` and `0.23.1`.
 
     ![Ollama Docker image name](/images/manual/help/faq-ollama-docker-hub.png#bordered)
 
     ![Ollama Docker image version tag](/images/manual/help/faq-ollama-image-tag.png#bordered)    
 
 3. Open Control Hub, go to **Browse** > **System** > **ollamaserver-shared** > **Deployments** > **ollama**, and then click <span class="material-symbols-outlined">edit_square</span>.
-4. In the YAML editor, find the `containers` section, and then note down the current image and tag, in case you need to roll back later. For example, `docker.io/beclab/ollama-ollama:0.20.5`.
+4. In the YAML editor, find the `containers` section, and then note down the current image and tag in case you need to roll back later. For example, `docker.io/beclab/ollama-ollama:0.20.5`.
 
     ![Ollama Docker image hub](/images/manual/help/faq-ollama-container-update.png#bordered)
 
@@ -77,11 +79,11 @@ The following steps demonstrate how to manually update using Ollama as an exampl
 </template>
 <template #Update-using-the-Olares-mirrored-image>
 
-:::warning Risk
-`beclab` images are provided by Olares for easier access. However, because some updates include environment adaptations, manually pulling a new version ahead of its official Market release might occasionally cause configuration mismatches with your current setup.
+:::warning Potential conflicts
+`beclab` images are provided by Olares for easier access. However, because some updates include environment adaptations, manually pulling a new version might cause configuration mismatches with your current setup. As a result, the application might fail to start or function correctly.
 :::
 
-For some high-frequency update AI applications, Olares might have already mirrored the latest image to the official registry but hasn't manually pushed the chart update to the Market yet.
+For some frequently updated AI applications, Olares might have already mirrored the latest image to the official registry but hasn't manually pushed the chart update to the Market yet.
 
 The following steps demonstrate how to manually update using OpenClaw as an example.
 
@@ -107,11 +109,7 @@ The following steps demonstrate how to manually update using OpenClaw as an exam
 </Tabs>
 
 :::tip Rollback
-If the application fails to start or experiences compatibility issues after a manual update, you can revert it by editing the YAML again to restore the old image tag using the one you noted down earlier. For example, change `docker.io/ollama/ollama:0.23.1` back to `docker.io/beclab/ollama-ollama:0.20.5`.
-:::
-
-:::warning Subsequent Market updates
-If you later update the same application through the Olares Market, the Market version will override your manually updated image. Because official Market releases often include specific environment adaptations and configuration upgrades, applying them over a manually modified container might occasionally cause mismatches. If the application fails to start after a Market update, roll back using the old image tag you noted down.
+If the application fails to start or experiences compatibility issues after the manual update, you can revert it by editing the YAML again to restore the old image tag using the one you noted down earlier. For example, change `docker.io/ollama/ollama:0.23.1` back to `docker.io/beclab/ollama-ollama:0.20.5`.
 :::
 
 ## Storage
