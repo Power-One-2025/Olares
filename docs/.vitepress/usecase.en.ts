@@ -177,6 +177,10 @@ export const useCaseSidebar: DefaultTheme.Sidebar = {
                   text: "Vane (Perplexica)",
                   link: "/use-cases/perplexica",
                 },
+                {
+                  text: "RAGFlow",
+                  link: "/use-cases/ragflow",
+                },
               ],
             },
             {
