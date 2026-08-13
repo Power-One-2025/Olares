@@ -1,21 +1,21 @@
 ---
 outline: [2, 4] 
 title: Build a local AI agent with LobeHub
-description: Install LobeHub on Olares and connect it to local models to build self-hosted AI assistants with knowledge bases, skills, and multimodal input.
+description: Install LobeHub on Olares and connect it to local models to build self-hosted AI assistants, generate images with ComfyUI, and create specialized agents with custom skills.
 head:
   - - meta
     - name: keywords
-      content: Olares, LobeHub, LobeChat, self-hosted lobechat, AI agent, lobechat on olares
-app_version: "1.0.14"
-doc_version: "2.0"
-doc_updated: "2026-07-29"      
+      content: Olares, LobeHub, LobeChat, self-hosted lobechat, AI agent, image generation, ComfyUI, lobechat on olares
+app_version: "1.0.18"
+doc_version: "2.2"
+doc_updated: "2026-08-13"      
 ---
 
 # Build your local AI agent with LobeHub
 
 LobeHub (previously known as LobeChat) is an open-source platform for building secure, self-hosted AI agents and chat experiences. It connects to your local models, supports file handling and knowledge bases, and allows you to create specialized agents with custom skills.
 
-This guide covers the installation, configuration, and practical usage of LobeHub to create your personalized AI agents.
+This guide covers the installation, configuration, and practical usage of LobeHub to create your personalized AI agents and generate images with ComfyUI.
 
 :::tip About the product name
 LobeHub is the official platform name, but the application is currently listed as "LobeChat" in the Olares Market. We use both names in this guide to match exactly what you will see on your screen. The Market will be updated to reflect the new LobeHub branding in the future release.
@@ -26,6 +26,7 @@ LobeHub is the official platform name, but the application is currently listed a
 - Install LobeHub on Olares and connect it to your local model.
 - Chat with Lobe AI for everyday tasks.
 - Create specialized agents using the Agent Builder or custom settings.
+- Generate images with ComfyUI.
 <!--- Create an agent group to enable multiple agents to collaborate on complex workflows.-->
 
 ## Prerequisites
@@ -34,6 +35,10 @@ Before you begin, you need the following model:
 | Model type | Model | How to get it |
 | :--- | :--- | :--- |
 | Chat | Qwen3.6-27B (llama.cpp) | Install from Market |
+| Image generation | ComfyUI Share | Install from Market |
+
+- LobeChat upgraded to the latest version (chart version xxx)
+- ComfyUI upgrade to the latest version (chart version xxx). For more informaiton, see [How to migrate to the new ComfyUI after upgrading to Olares 1.12.6](../use-cases/comfyui-common-issues.md#how-to-migrate-to-the-new-comfyui-after-upgrading-to-olares-1-12-6).
 
 <!--@include: ../reusables/ai-service-connections.md#use-different-model-->
 
@@ -294,7 +299,152 @@ For complex workflows, a single agent might not be enough. LobeHub allows you to
 1. On the LobeHub home page, point to the target agent team, click <i class="material-symbols-outlined">more_horiz</i>, and then click **Delete**.
 -->
 
-## FAQ
+## Generate images with ComfyUI
+
+Connect ComfyUI to LobeHub, so you can generate images directly through chat.
+
+### Configure the ComfyUI connection
+
+1. Open Olares Settings, go to **Applications** > **ComfyUI** > **Entrances** > **ComfyUI**, and then copy the **Endpoint** URL. For example, `https://d9ce03380.laresprime.olares.com`.
+
+   ![ComfyUI entrance in Settings](/images/manual/use-cases/comfyui-entrance.png#bordered){width=75%}
+
+2. Open LobeChat, and then go to **Settings** > **AI Service Provider** > **ComfyUI**:
+
+   a. Ensure the **ComfyUI** option is toggled on.
+
+   b. In **ComfyUI Server URL**, paste the **Endpoint** URL you just copied.
+
+   c. For **Authentication Type**, select **No Authentication**.
+
+   ![ComfyUI settings in LobeHub](/images/manual/use-cases/lobehub-comfyui-config.png#bordered)   
+
+6. Locate the **Model List** section, and then check that ComfyUI presets such as **FLUX.1 Schnell** appear.
+
+   ![ComfyUI preset models](/images/manual/use-cases/lobehub-comfyui-preset-models.png#bordered)
+
+   :::tip What are ComfyUI presets?
+   The Model List shows ComfyUI presets. A preset is a ready-made image generation workflow in LobeChat.
+
+   For example, **FLUX.1 Schnell** is the display name of the preset, and `comfyui/flux-schnell` is its preset ID. When you select it, LobeChat runs the fixed workflow behind the scenes.
+   :::
+
+7. Toggle on the preset you want to use, such as **FLUX.1 Schnell**.
+
+### Generate an image
+
+1. Return to the home page, select **Artwork** from the left sidebar to open the image generation page.
+
+   ![Artwork in LobeHub](/images/manual/use-cases/lobehub-artwork-entry.png#bordered)
+
+2. From the left panel, configure the generation options:
+
+   a. Select a ComfyUI preset model. This guide uses **FLUX.1 Schnell**.
+
+      ![Artwork model select in LobeHub](/images/manual/use-cases/lobehub-artwork-model-select.png#bordered)
+
+   b. For **Aspect Ratio**, select **1:1**.
+
+   c. For **Width** and **Height**, enter the values as needed.
+
+   d. For **Steps**, keep the default value, or lower it for faster generation.
+
+   e. For **Seed**, leave it empty for a random result. Enter a fixed value if you want to recreate a similar image later.
+
+   f. For **Number of Images**, select **1**.
+
+3. Send a prompt. For example:
+
+   ```text
+   A black puppy on the beach, sunset
+   ```
+
+4. If the **Use custom Fal API Key** popup appears, click **Close message**.
+5. Wait for the image to finish generating.
+
+   <!-- ![Generated image in LobeHub](/images/manual/use-cases/lobehub-comfyui-image.png#bordered) -->
+
+:::tip
+Image generation might take from a few seconds to a few minutes depending on the model and current load.
+:::
+
+### Required models for the FLUX.1 Schnell preset
+
+Each ComfyUI preset needs its own model files placed in the correct directories under **Common** > **comfyui** > **model**. The following table uses the FLUX.1 Schnell preset as an example.
+
+If you see errors such as `Model not found: flux1-schnell.safetensors` or `Failed to queue prompt` while using this preset, a required model file is usually missing or in the wrong directory.
+
+| File | Directory | Download link |
+| :--- | :--- | :--- |
+| `flux1-schnell-fp8.safetensors` | Both `checkpoints/` and `diffusion_models` | [Download](https://huggingface.co/Comfy-Org/flux1-schnell/resolve/main/flux1-schnell-fp8.safetensors?download=true) |
+| `t5xxl_fp16.safetensors` | Both `text_encoders/` and `clip/` | [Download](https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/main/t5xxl_fp16.safetensors) |
+| `clip_l.safetensors` | `text_encoders/` | [Download](https://huggingface.co/comfyanonymous/flux_text_encoders/blob/main/clip_l.safetensors) |
+| `ae.safetensors` | `vae/` | [Download](https://huggingface.co/Comfy-Org/Lumina_Image_2.0_Repackaged/resolve/main/split_files/vae/ae.safetensors) |
+
+:::tip Download time
+These model files vary in size. The main model is over 16 GB and the text encoder is over 9 GB. Depending on your network speed, downloading the larger files might take from several minutes to a few hours.
+:::
+
+### Keep generated images available
+
+By default, generated images might not persist across Pod restarts or session cleanup. To keep images accessible from older conversations, configure S3-compatible object storage for LobeChat. This guide uses Cloudflare R2 as an example. You can also use other S3-compatible services such as AWS S3 or MinIO.
+
+:::warning Use your own credentials
+You must create and use your own Cloudflare R2 bucket and API token. Do not use credentials shared by others, including test credentials.
+:::
+
+#### Create a Cloudflare R2 bucket and API token
+
+1. Sign up and log in to the [Cloudflare Dashboard](https://dash.cloudflare.com/).
+
+2. From the left sidebar, go to **Storage & databases** > **R2 Object Storage** > **Create bucket**.
+
+3. Click **Create bucket**, and then enter a bucket name such as `LobeHub`.
+
+4. On the R2 overview page, copy the **Account ID**.
+
+5. Go to **Manage R2 API Tokens** > **Create API Token**:
+
+   a. Set the permission to **Object Read & Write** for the bucket.
+
+   b. Save the **Access Key ID** and **Secret Access Key**. The secret is shown only once.
+
+#### Configure the S3 endpoint
+
+The R2 S3 endpoint uses the following format. Do not include the bucket name in the domain.
+
+```text
+https://<AccountID>.r2.cloudflarestorage.com
+```
+
+For example: `https://a1b2c3d4e5f6.r2.cloudflarestorage.com`
+
+#### Update the LobeChat ConfigMap
+
+1. Open Control Hub from the Launchpad, and then go to **Browse** > **{username}** > **lobechat-{username}** > **Configmaps** > **lobechat-config**.
+
+
+
+find the LobeChat ConfigMap named `lobechat-config`.
+
+2. Update the following fields:
+
+   | Field | Value |
+   | :--- | :--- |
+   | `S3_ACCESS_KEY_ID` | The Access Key ID from R2 |
+   | `S3_BUCKET` | Your bucket name, such as `LobeHub` |
+   | `S3_ENDPOINT` | `https://<AccountID>.r2.cloudflarestorage.com` |
+   | `S3_REGION` | `auto` |
+   | `S3_SECRET_ACCESS_KEY` | The Secret Access Key from R2 |
+   | `S3_SET_ACL` | `0` |
+
+3. Save the ConfigMap, and then restart the LobeChat Pod to apply the changes.
+
+#### Verify
+
+Generate a new image, refresh the page or open a new conversation, and confirm that the image still loads.
+
+## FAQs
 
 ### Why did the connection check fail when I connected to Ollama?
 
@@ -305,3 +455,51 @@ If you encounter the `Error requesting Ollama service` error, troubleshoot as fo
 2. Ensure the **Use Client Request Mode** option on the Ollama settings page is disabled.
 
    ![Disable the use client request mode option](/images/manual/use-cases/lobehub-disable-client-request-mode3.png#bordered)
+
+### Why is the ComfyUI preset list empty?
+
+1. Verify that the **ComfyUI Server URL** in LobeChat matches the **Endpoint** URL from Olares **Settings** > **Applications** > **ComfyUI** > **Entrances** > **ComfyUI**.
+2. Open **ComfyUI Launcher** and confirm it shows **Running**.
+3. In **ComfyUI Launcher**, go to **Models** > **Installed models**, and confirm the required models are installed.
+
+### Why did image generation fail with "Failed to queue prompt"?
+
+Generation failed:
+- Model not found
+- Failed to queue prompt
+- 
+
+
+This usually means a required model file is missing or in the wrong directory. See [Required models for the FLUX.1 Schnell preset](#required-models-for-the-flux1-schnell-preset) for the file list, correct paths, and download links.
+
+### Why do generated images disappear after a while?
+
+Without object storage, images might be lost when the LobeChat Pod restarts or the session is cleaned up. See [Keep generated images available](#keep-generated-images-available) for steps to configure Cloudflare R2 or another S3-compatible storage.
+
+### How to download a missing model file from Hugging Face
+
+The following steps use `flux1-schnell.safetensors` as an example. Use the same process to download other missing model files from their links in [Required models for the FLUX.1 Schnell preset](#required-models-for-the-flux1-schnell-preset).
+
+1. Go to [Comfy-Org on Hugging Face](https://huggingface.co/Comfy-Org).
+2. Locate **Models**, click the search icon next to it, and then enter `flux1-schnell` in the search field.
+
+   ![Search in Comfy-Org on Hugging Face](/images/manual/use-cases/lobehub-comfy-org-search.png#bordered)
+
+3. From the result list, click **Comfy-Org/flux1-schnell**.
+
+   ![Search result for flux1-schnell](/images/manual/use-cases/lobehub-comfy-org-search-result.png#bordered)
+
+4. Click the **Files and versions** tab, and then select **flux1-schnell-fp8.safetensors**.
+
+   ![FLUX.1 Schnell FP8 file](/images/manual/use-cases/lobehub-comfy-org-fp8.png#bordered)
+
+   :::tip How to choose between the two files
+   `flux1-schnell-fp8.safetensors` is the FP8 quantized version. It is smaller, faster, and uses less memory, so it works for most setups.
+
+   `flux1-schnell.safetensors` is the full precision version. It is larger and needs more memory, and might produce slightly better quality.
+   :::
+
+5. Click **Download**.
+6. Open Olares Files, and then go to the directory shown in [Required models for the FLUX.1 Schnell preset](#required-models-for-the-flux1-schnell-preset). Place the downloaded file in that directory.
+
+If the workflow still reports that `flux1-schnell.safetensors` is missing, rename the downloaded file from `flux1-schnell-fp8.safetensors` to `flux1-schnell.safetensors`.
