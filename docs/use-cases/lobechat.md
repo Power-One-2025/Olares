@@ -356,23 +356,18 @@ Connect ComfyUI to LobeHub, so you can generate images directly through chat.
 3. Send a prompt. For example:
 
    ```text
-   A black puppy on the beach, sunset
+   A glowing crystal flower, dark background, cinematic lighting, elegant
    ```
-
 4. If the **Use custom Fal API Key** popup appears, click **Close message**.
 5. Wait for the image to finish generating.
 
-   <!-- ![Generated image in LobeHub](/images/manual/use-cases/lobehub-comfyui-image.png#bordered) -->
-
-:::tip
-Image generation might take from a few seconds to a few minutes depending on the model and current load.
-:::
+   ![Generated image in LobeHub](/images/manual/use-cases/lobehub-comfyui-image.png#bordered)
 
 ### Required models for the FLUX.1 Schnell preset
 
 Each ComfyUI preset needs its own model files placed in the correct directories under **Common** > **comfyui** > **model**. The following table uses the FLUX.1 Schnell preset as an example.
 
-If you see errors such as `Model not found: flux1-schnell.safetensors` or `Failed to queue prompt` while using this preset, a required model file is usually missing or in the wrong directory.
+If you see errors such as `Model not found: flux1-schnell.safetensors` or `Failed to queue prompt` while using this preset, required model files are usually missing or in the wrong directory.
 
 | File | Directory | Download link |
 | :--- | :--- | :--- |
@@ -387,53 +382,30 @@ These model files vary in size. The main model is over 16 GB and the text encode
 
 ### Keep generated images available
 
-By default, generated images might not persist across Pod restarts or session cleanup. To keep images accessible from older conversations, configure S3-compatible object storage for LobeChat. This guide uses Cloudflare R2 as an example. You can also use other S3-compatible services such as AWS S3 or MinIO.
-
-:::warning Use your own credentials
-You must create and use your own Cloudflare R2 bucket and API token. Do not use credentials shared by others, including test credentials.
-:::
+By default, generated images might not persist across Pod restarts or session cleanup. To keep images accessible from older conversations, configure S3-compatible object storage for LobeChat. This guide uses Cloudflare R2 as an example. You can also use other S3-compatible services such as AWS S3.
 
 #### Create a Cloudflare R2 bucket and API token
 
 1. Sign up and log in to the [Cloudflare Dashboard](https://dash.cloudflare.com/).
-
 2. From the left sidebar, go to **Storage & databases** > **R2 Object Storage** > **Create bucket**.
-
 3. Click **Create bucket**, and then enter a bucket name such as `LobeHub`.
-
 4. On the R2 overview page, copy the **Account ID**.
-
 5. Go to **Manage R2 API Tokens** > **Create API Token**:
 
    a. Set the permission to **Object Read & Write** for the bucket.
 
    b. Save the **Access Key ID** and **Secret Access Key**. The secret is shown only once.
 
-#### Configure the S3 endpoint
-
-The R2 S3 endpoint uses the following format. Do not include the bucket name in the domain.
-
-```text
-https://<AccountID>.r2.cloudflarestorage.com
-```
-
-For example: `https://a1b2c3d4e5f6.r2.cloudflarestorage.com`
-
 #### Update the LobeChat ConfigMap
 
 1. Open Control Hub from the Launchpad, and then go to **Browse** > **{username}** > **lobechat-{username}** > **Configmaps** > **lobechat-config**.
-
-
-
-find the LobeChat ConfigMap named `lobechat-config`.
-
 2. Update the following fields:
 
    | Field | Value |
    | :--- | :--- |
    | `S3_ACCESS_KEY_ID` | The Access Key ID from R2 |
    | `S3_BUCKET` | Your bucket name, such as `LobeHub` |
-   | `S3_ENDPOINT` | `https://<AccountID>.r2.cloudflarestorage.com` |
+   | `S3_ENDPOINT` | Use this format `https://<AccountID>.r2.cloudflarestorage.com`, and replace `<AccountID>` with the.**Account ID** from R2  |
    | `S3_REGION` | `auto` |
    | `S3_SECRET_ACCESS_KEY` | The Secret Access Key from R2 |
    | `S3_SET_ACL` | `0` |
@@ -442,7 +414,7 @@ find the LobeChat ConfigMap named `lobechat-config`.
 
 #### Verify
 
-Generate a new image, refresh the page or open a new conversation, and confirm that the image still loads.
+Generate a new image, refresh the page or open a new chat, and confirm that the image still loads.
 
 ## FAQs
 
@@ -502,4 +474,3 @@ The following steps use `flux1-schnell.safetensors` as an example. Use the same 
 5. Click **Download**.
 6. Open Olares Files, and then go to the directory shown in [Required models for the FLUX.1 Schnell preset](#required-models-for-the-flux1-schnell-preset). Place the downloaded file in that directory.
 
-If the workflow still reports that `flux1-schnell.safetensors` is missing, rename the downloaded file from `flux1-schnell-fp8.safetensors` to `flux1-schnell.safetensors`.
